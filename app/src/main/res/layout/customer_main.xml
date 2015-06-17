@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CustomerActivity">
+
+    <TextView android:id="@+id/customer_textview"
+        android:text="@string/customer_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"/>
+
+    <EditText
+        android:id="@+id/job_description"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:hint="@string/job_description"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <!-- Set OnClickListener to trigger results when pressed -->
+
+
+        <!-- Closing tag for the horizontal nested layout -->
+
+
+        <Spinner
+            android:id="@+id/jobtypes_spinner"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:entries="@array/job_types"
+            android:prompt="@string/jobtypes_prompt"/>
+
+        <Button
+            android:id="@+id/postjob_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_marginLeft="10dp"
+            android:text="@string/postjob_button" />
+
+        <!-- Shows an image from your drawable resources -->
+        <!--<ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/job_order" />-->
+
+    </LinearLayout>
+
+
+   <ListView
+       android:id="@+id/job_listview"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_alignParentLeft="true"
+       android:layout_alignParentTop="true" />
+
+
+</LinearLayout>

@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">consumer_services_android</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="postjob_button">Post a Job</string>
+    <string name="getjobs_button">Get Jobs</string>
+    <string name="customer_text_view">Welcome, You can view/update your job or post a new one</string>
+    <string name="job_details">Job Details</string>
+
+    <string name="title_customer_activity">Customer Activity</string>
+    <string name="customer_phone_number">Enter phone number</string>
+    <string name="username">Name please</string>
+    <string name="pincode">Pincode</string>
+    <string name="job_description">Job description</string>
+
+    <string name="jobtypes_prompt">Choose a Job type</string>
+    <string-array name="job_types">
+        <item>PLUMBING</item>
+        <item>ELECTRICAL</item>
+    </string-array>
+
+</resources>
