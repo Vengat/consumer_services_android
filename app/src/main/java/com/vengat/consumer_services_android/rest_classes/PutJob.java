@@ -1,0 +1,43 @@
+package com.vengat.consumer_services_android.rest_classes;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vengat.consumer_services_android.model.Job;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+/**
+ * Created by vengat.r on 6/24/2015.
+ */
+public class PutJob {
+
+    private String jobId, customerMobileNumber;
+
+    private final String CANCEL_JOB_URL = "http://10.0.2.2:8080/customers/cancelJob/jobId/"+jobId+"/mobileNumber/"+customerMobileNumber;
+
+    public Job cancelJob(Job job) throws IOException {
+        StringBuffer stringBuffer = new StringBuffer();
+        ObjectMapper objectMapper = new ObjectMapper();
+        HttpClient client = new DefaultHttpClient();
+        String cancel_job_url = "http://10.0.2.2:8080/customers/cancelJob/jobId/"+job.getId()+"/mobileNumber/"+job.getCustomerMobileNumber();
+        HttpPut request = new HttpPut(cancel_job_url);
+        HttpResponse response = client.execute(request);
+
+        BufferedReader rd = new BufferedReader
+                (new InputStreamReader(response.getEntity().getContent()));
+
+        String line = "";
+        while ((line = rd.readLine()) != null) {
+            stringBuffer.append(line);
+        }
+        String jsonResponse = stringBuffer.toString();
+        Job j = objectMapper.readValue(jsonResponse, Job.class);
+        return j;
+    }
+}

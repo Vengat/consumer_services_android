@@ -2,10 +2,12 @@ package com.vengat.consumer_services_android;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,23 +18,38 @@ import android.widget.Toast;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.vengat.consumer_services_android.com.vengat.consumer_services_android.adapter.JSONAdapter;
+import com.vengat.consumer_services_android.model.Job;
+import com.vengat.consumer_services_android.model.JobStatus;
+import com.vengat.consumer_services_android.model.JobType;
+import com.vengat.consumer_services_android.rest_classes.GetJob;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+
+import static com.vengat.consumer_services_android.rest_classes.PostJob.POST;
 
 /**
  * Created by vengat.r on 6/15/2015.
  */
-public class CustomerActivity extends ActionBarActivity implements View.OnClickListener {
+public class CustomerActivity extends ActionBarActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     private static final String QUERY_URL_GET_JOBS_BY_MOBILE_NUMBER = "http://10.0.2.2:8080/customers/jobs/mobileNumber/";//"http://jsonplaceholder.typicode.com/users/";//
 
-    //private static final String QUERY_URL_GET_JOBS_BY_MOBILE_NUMBER ="http://openlibrary.org/search.json?q=";
-
+    //private static final String QUERY_URL_GET_JOBS_BY_MOBILE_NUMBER ="http://ec2-52-74-141-170.ap-southeast-1.compute.amazonaws.com:8080/customers/jobs/mobileNumber/";
+    private static final String QUERY_URL_GET_JOB_BY_ID = "http://10.0.2.2:8080/jobs/id";
 
     private static final String QUERY_URL_POST_PUT_JOB = "http://10.0.2.2:8080/jobs";
+
+    //private static final String QUERY_URL_POST_PUT_JOB = "http://ec2-52-74-141-170.ap-southeast-1.compute.amazonaws.com:8080/jobs";
+
+    private String jobTypeSpinnerSelectionValue = null;
+
+    public final static String JOB_ID = "com.vengat.consumer_services_android.JOB_ID";
 
     ListView jobListView;
 
@@ -40,7 +57,7 @@ public class CustomerActivity extends ActionBarActivity implements View.OnClickL
 
     ProgressDialog progressDialog;
 
-    EditText customerPhoneEditText;
+    EditText customerPhoneEditText, jobDescriptionEditText;
 
     Button getJobsButton, postJobButton;
 
@@ -51,6 +68,9 @@ public class CustomerActivity extends ActionBarActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        //setProgressBarIndeterminateVisibility(false);
 
         // Tell the activity which XML layout is right
         setContentView(R.layout.customer_main);
@@ -65,6 +85,7 @@ public class CustomerActivity extends ActionBarActivity implements View.OnClickL
 
 
         jobListView = (ListView) findViewById(R.id.job_listview);//job_listview
+        jobListView.setOnItemClickListener(this);
 
         postJobButton = (Button) findViewById(R.id.postjob_button);
         postJobButton.setOnClickListener(this);
@@ -74,6 +95,7 @@ public class CustomerActivity extends ActionBarActivity implements View.OnClickL
         //getJobsButton = (Button) findViewById(R.id.getjobs_button);
         //getJobsButton.setOnClickListener(this);
 
+        jobDescriptionEditText = (EditText) findViewById(R.id.job_description);
         //customerPhoneEditText = (EditText) findViewById(R.id.customer_phonenumber_edittext);
 
         //Create a JSONAdapter for the ListView
@@ -86,76 +108,52 @@ public class CustomerActivity extends ActionBarActivity implements View.OnClickL
         progressDialog.setMessage("Getting your jobs");
         progressDialog.setCancelable(false);
 
-        queryJobs(mobileNumber);
+        queryJobsByCustomerMobileNumber(mobileNumber);
     }
 
 
 
     public void createSpinner() {
         jobTypeSpinner = (Spinner) findViewById(R.id.jobtypes_spinner);
-        // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.job_types, android.R.layout.simple_spinner_item);
-
-
-        // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-       // Apply the adapter to the spinner
         jobTypeSpinner.setAdapter(adapter);
-
         jobTypeSpinner.setOnItemSelectedListener(new JobTypeOnItemSelectedListener());
+        jobTypeSpinnerSelectionValue = jobTypeSpinner.getSelectedItem().toString();
     }
 
 
-    private void queryJobs(String searchString) {
-
+    private void queryJobsByCustomerMobileNumber(String mobileNumber) {
         // Prepare your search string to be put in a URL
         // It might have reserved characters or something
         String urlString = "";
         try {
-            urlString = URLEncoder.encode(searchString, "UTF-8");
+            urlString = URLEncoder.encode(mobileNumber, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-
-            // if this fails for some reason, let the user know why
             e.printStackTrace();
             Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
-        // Create a client to perform networking
         AsyncHttpClient client = new AsyncHttpClient();
-
+        //setProgressBarIndeterminateVisibility(true);
         progressDialog.show();
-
-        // Have the client get a JSONArray of data
-        // and define how to respond
-        //urlString="";
         Log.d("Url string is " + QUERY_URL_GET_JOBS_BY_MOBILE_NUMBER + urlString, "");
         client.get(QUERY_URL_GET_JOBS_BY_MOBILE_NUMBER + urlString,
                 new JsonHttpResponseHandler() {
-
                     @Override
                     public void onSuccess(JSONArray jsonArray) {
-                        //Log.d("omg android", jsonObject.toString());
+                        //setProgressBarIndeterminateVisibility(false);
                         progressDialog.dismiss();
-                        // Display a "Toast" message
-                        // to announce your success
                         Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_LONG).show();
-
-                        // 8. For now, just log results
-
-                        Log.d("omg android", jsonArray.toString());
                         jsonAdapter.updateData(jsonArray);
                     }
 
                     @Override
                     public void onFailure(int statusCode, Throwable throwable, JSONArray error) {
+                        //setProgressBarIndeterminateVisibility(false);
                         progressDialog.dismiss();
-                        // Display a "Toast" message
-                        // to announce the failure
                         Toast.makeText(getApplicationContext(), "Error: " + statusCode + " " + throwable.getMessage(), Toast.LENGTH_LONG).show();
-
-                        // Log error message
-                        // to help solve any problems
                         Log.e("omg android", statusCode + " " + throwable.getMessage());
                     }
                 });
@@ -166,9 +164,64 @@ public class CustomerActivity extends ActionBarActivity implements View.OnClickL
         
         if(v.getId() == R.id.postjob_button) {
             Log.d("Posting a job", "");
+            progressDialog.show();
+            new HttpAsyncTask().execute(QUERY_URL_POST_PUT_JOB);
+            queryJobsByCustomerMobileNumber(mobileNumber);
+            progressDialog.dismiss();
         }
 
     }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        JSONObject jsonObject = (JSONObject) jsonAdapter.getItem(position);
+        String jobId = jsonObject.optString("id","");
+        Log.d("On Item Click****", "");
+        Intent jobDetailIntent = new Intent(this, JobDetailActivity.class);
+        jobDetailIntent.putExtra("jobId", jobId);
+        startActivity(jobDetailIntent);
+    }
+
+    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+
+
+            GetJob getJob = new GetJob();
+            Job job = null;
+            try {
+                job =  getJob.getNewJob();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Log.d("*******Job customer name"+job.getCustomerName(), "");
+            job.setJobType(JobType.valueOf(jobTypeSpinnerSelectionValue));
+            //job.setJobType(JobType.PLUMBING);
+            job.setJobStatus(JobStatus.OPEN);
+            job.setCustomerName(userName);
+            job.setCustomerMobileNumber(Long.parseLong(mobileNumber, 10));
+            job.setPincode(pincode);
+            job.setDescription(jobDescriptionEditText.getText().toString());
+
+            String result = "";
+
+            try {
+                result = POST(urls[0], job);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Toast.makeText(getBaseContext(), "Data Sent!", Toast.LENGTH_LONG).show();
+            queryJobsByCustomerMobileNumber(mobileNumber);
+        }
+    }
+
 
 }
 

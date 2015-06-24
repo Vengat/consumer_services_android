@@ -17,13 +17,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 
-
 /**
  * Created by vengat.r on 6/15/2015.
  */
 public class JSONAdapter  extends BaseAdapter {
 
-    private static final String IMAGE_URL_BASE = "http://covers.openlibrary.org/b/id/";
+
 
     Context mContext;
     LayoutInflater mInflater;
@@ -66,6 +65,7 @@ public class JSONAdapter  extends BaseAdapter {
             holder.jobTypeTextView = (TextView) convertView.findViewById(R.id.text_job_type);
             holder.jobStatusTextView = (TextView) convertView.findViewById(R.id.text_job_status);
             holder.serviceProviderPhoneTextView = (TextView) convertView.findViewById(R.id.text_serviceprovicer_phone);
+            holder.serviceProviderName = (TextView) convertView.findViewById(R.id.text_serviceprovicer_name);
 
             // hang onto this holder for future recyclage
             convertView.setTag(holder);
@@ -79,10 +79,15 @@ public class JSONAdapter  extends BaseAdapter {
 
         JSONObject jsonObject = (JSONObject) getItem(position);
 
-
+        String jobId = "";
         String jobType = "";
         String jobStatus = "";
         String serviceProviderMobileNumber = "";
+        String serviceProviderName = "";
+
+        if (jsonObject.has("jobId")) {
+            jobId = jsonObject.optString("id");
+        }
 
         if (jsonObject.has("jobType")) {
             jobType = jsonObject.optString("jobType");
@@ -96,10 +101,15 @@ public class JSONAdapter  extends BaseAdapter {
             serviceProviderMobileNumber = jsonObject.optString("serviceProviderMobileNumber");
         }
 
+        if (jsonObject.has("serviceProviderName")) {
+            serviceProviderName = jsonObject.optString("serviceProviderName");
+        }
+
         // Send these Strings to the TextViews for display
         holder.jobTypeTextView.setText(jobType);
         holder.jobStatusTextView.setText(jobStatus);
         holder.serviceProviderPhoneTextView.setText(serviceProviderMobileNumber);
+        holder.serviceProviderName.setText(serviceProviderName);
 
 
 
@@ -120,6 +130,7 @@ public class JSONAdapter  extends BaseAdapter {
         public TextView jobTypeTextView;
         public TextView jobStatusTextView;
         public TextView serviceProviderPhoneTextView;
+        public TextView serviceProviderName;
     }
 
 }

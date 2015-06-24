@@ -8,9 +8,18 @@ package com.vengat.consumer_services_android.model;
  *
  */
 public enum JobStatus {
-	OPEN,
-	ASSIGNED,
-    WIP,
-    CANCELLED,
-    CLOSED
+	OPEN("open"),
+	ASSIGNED("assigned"),
+    WIP("wip"),
+    CANCELLED("cancelled"),
+    CLOSED("closed");
+
+    String val;
+    JobStatus(String val) {
+        this.val = val;
+    }
+
+    String getVal() {
+        return val;
+    }
 }
