@@ -4,7 +4,6 @@
 package com.vengat.consumer_services_android.model;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author vengat.r
@@ -37,7 +36,7 @@ public class Customer implements Serializable {
 	private String city;
 	
 
-	private List<Job> jobs;
+	//private List<Job> jobs;
 	
 	protected Customer() {}
 	

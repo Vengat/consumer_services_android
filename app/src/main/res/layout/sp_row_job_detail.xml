@@ -143,11 +143,6 @@
 
     </TableLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/cancel_job_button"
-        android:id="@+id/cancel_job_button" />
 
     <Button
         android:layout_width="wrap_content"

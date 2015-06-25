@@ -6,15 +6,19 @@
     <string name="postjob_button">Post a Job</string>
     <string name="getjobs_button">Get Jobs</string>
     <string name="customer_text_view">Welcome, You can view/update your job or post a new one</string>
+    <string name="service_provider_text_view">Welcome, You can view/update jobs</string>
     <string name="job_details">Job Details</string>
 
     <string name="title_customer_activity">Customer Activity</string>
+    <string name="title_service_provider_activity">Service Provider Activity</string>
     <string name="title_jobdetail_activity">Job Detail</string>
     <string name="customer_phone_number">Enter phone number</string>
+    <string name="customer_name">Customer Name</string>
     <string name="username">Name please</string>
     <string name="pincode">Pincode</string>
     <string name="job_description">Job description</string>
     <string name="cancel_job_button">Cancel Job </string>
+    <string name="assign_job_button">Assign</string>
 
     <string name="job_id">Job Id</string>
     <string name="job_type">Job Type</string>

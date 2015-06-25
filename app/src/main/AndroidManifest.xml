@@ -40,6 +40,25 @@
                 android:value=".CustomerActivity" />
         </activity>
 
+        <activity
+            android:name=".ServiceProviderActivity"
+            android:label="@string/title_service_provider_activity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.vengat.consumer_services_android.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".JobSPAssignActivity"
+            android:label="@string/title_jobdetail_activity"
+            android:parentActivityName=".ServiceProviderActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ServiceProviderActivity" />
+        </activity>
+
     </application>
 
 </manifest>

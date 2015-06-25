@@ -43,7 +43,11 @@ public class CustomerActivity extends ActionBarActivity implements View.OnClickL
     //private static final String QUERY_URL_GET_JOBS_BY_MOBILE_NUMBER ="http://ec2-52-74-141-170.ap-southeast-1.compute.amazonaws.com:8080/customers/jobs/mobileNumber/";
     private static final String QUERY_URL_GET_JOB_BY_ID = "http://10.0.2.2:8080/jobs/id";
 
+    //private static final String QUERY_URL_GET_JOB_BY_ID = "http://ec2-52-74-141-170.ap-southeast-1.compute.amazonaws.com:8080/jobs/id";
+
     private static final String QUERY_URL_POST_PUT_JOB = "http://10.0.2.2:8080/jobs";
+
+
 
     //private static final String QUERY_URL_POST_PUT_JOB = "http://ec2-52-74-141-170.ap-southeast-1.compute.amazonaws.com:8080/jobs";
 

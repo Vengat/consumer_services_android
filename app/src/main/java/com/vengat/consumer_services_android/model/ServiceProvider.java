@@ -3,7 +3,6 @@ package com.vengat.consumer_services_android.model;
 
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
 
@@ -25,18 +24,19 @@ public class ServiceProvider implements Serializable {
 	
 
 	private Set<JobType> jobTypes;
-	
 
-	private List<Job> jobs;
+	private Set<String> pincodesServiced;
+	//private List<Job> jobs;
 	
 	protected ServiceProvider() {
 		
 	}
-	
-	public ServiceProvider(long mobileNumber, String name, Set<JobType> jobTypes) {
+
+	public ServiceProvider(long mobileNumber, String name, Set<JobType> jobTypes, Set<String> pincodesServiced) {
 		this.mobileNumber = mobileNumber;
 		this.name = name;
 		this.jobTypes = jobTypes;
+		this.pincodesServiced = pincodesServiced;
 	}
 
 	public long getMobileNumber() {
@@ -65,6 +65,14 @@ public class ServiceProvider implements Serializable {
 
 	public long getId() {
 		return id;
+	}
+
+	public void setPincodesServiced(Set<String> pincodes) {
+		this.pincodesServiced = pincodes;
+	}
+
+	public Set<String> getPincodesServiced() {
+		return this.pincodesServiced;
 	}
 		
 
