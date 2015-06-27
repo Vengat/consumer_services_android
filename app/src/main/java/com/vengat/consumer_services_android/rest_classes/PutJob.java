@@ -54,7 +54,7 @@ public class PutJob {
         System.out.println("Hello your json object "+spJson);
         HttpClient client = new DefaultHttpClient();
         String assign_job_url = "http://localhost:8080/serviceProviders/assignJob/jobId/"+jobId;
-        //String cancel_job_url = "http://ec2-52-74-141-170.ap-southeast-1.compute.amazonaws.com:8080/customers/cancelJob/jobId/"+job.getId()+"/mobileNumber/"+job.getCustomerMobileNumber();
+        //String assign_job_url = "http://ec2-52-74-141-170.ap-southeast-1.compute.amazonaws.com:8080/serviceProviders/assignJob/jobId/"+jobId;
         HttpPut request = new HttpPut(assign_job_url);
         request.setEntity(new StringEntity(spJson));
         request.setHeader("Accept", "application/json");

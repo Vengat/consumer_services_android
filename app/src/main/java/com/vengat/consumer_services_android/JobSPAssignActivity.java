@@ -39,6 +39,11 @@ public class JobSPAssignActivity extends ActionBarActivity implements View.OnCli
     private String jobId;
     private String mobileNumber;
 
+    private ServiceProvider currentServiceProvider;
+
+    private GetServiceProviderAsyncHttpTask getServiceProviderAsyncHttpTask;
+    private AssignJobAsyncHttpTask assignJobAsyncHttpTask;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +84,7 @@ public class JobSPAssignActivity extends ActionBarActivity implements View.OnCli
         textView10 = (TextView) findViewById(R.id.textView10);
         textView11 = (TextView) findViewById(R.id.textView11);
 
-        assign = (Button) findViewById(R.id.assign_job_button);
+        assign = (Button) findViewById(R.id.sp_assign_job_button);
         assign.setOnClickListener(this);
 
         progressDialog = new ProgressDialog(this);
@@ -87,6 +92,9 @@ public class JobSPAssignActivity extends ActionBarActivity implements View.OnCli
         progressDialog.setCancelable(false);
 
         new HttpAsyncTask().execute(QUERY_URL_GET_JOB_BY_ID + jobId);
+        getServiceProviderAsyncHttpTask = new GetServiceProviderAsyncHttpTask();
+        getServiceProviderAsyncHttpTask.execute(CANCEL_JOB_URL);
+        //assignJobAsyncHttpTask = new AssignJobAsyncHttpTask();
     }
 
     private class HttpAsyncTask extends AsyncTask<String, Void, Job> {
@@ -124,24 +132,44 @@ public class JobSPAssignActivity extends ActionBarActivity implements View.OnCli
 
     }
 
-    private class AssignJobAsyncHttpTask extends AsyncTask<String, Void, Job> {
+    private class GetServiceProviderAsyncHttpTask extends AsyncTask<String, Void, ServiceProvider> {
 
         @Override
-        protected Job doInBackground(String... urls) {
-            GetServiceProvider getServiceProvider = new GetServiceProvider();
+        protected ServiceProvider doInBackground(String... params) {
+            com.vengat.consumer_services_android.rest_classes.GetServiceProvider getServiceProvider = new GetServiceProvider();
             ServiceProvider sp = null;
-            Job job = null;
+
             try {
                 sp =  getServiceProvider.getServiceProvider(Long.parseLong(mobileNumber));
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            return sp;
+        }
+
+        @Override
+        protected void onPostExecute(ServiceProvider sp) {
+            //List<ServiceProvider> serviceProviders = new ArrayList<>();
+            //serviceProviders.add(sp);
+            //AssignJobAsyncHttpTask assignJobAsyncHttpTask = new AssignJobAsyncHttpTask();
+            currentServiceProvider = sp;
+        }
+    }
+
+    private class AssignJobAsyncHttpTask extends AsyncTask<String, Void, Job> {
+
+        @Override
+        protected Job doInBackground(String... params) {
+            Job job = null;
             try {
-                job = new PutJob().assignJob(Long.parseLong(jobId), sp);
+                if (currentServiceProvider == null) System.out.println("&&&&&&Current Service Provider is null");
+                System.out.println("&&&&&jobId "+jobId);
+                job = new PutJob().assignJob(Long.parseLong(jobId), currentServiceProvider);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Log.d("*******Job customer name" + job.getCustomerName(), "");
+            //Log.d("*******Job customer name AssignJobAsyncHttpTask" + job.getCustomerName(), "");
             return job;
         }
 
@@ -167,6 +195,13 @@ public class JobSPAssignActivity extends ActionBarActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        new AssignJobAsyncHttpTask().execute(CANCEL_JOB_URL); //CANCEL_JOB_URL is a dummy value. The AsyncHttpTask should be changed
+        System.out.println("Clicked Assign currentServiceProvider" + currentServiceProvider.getName());
+        //GetServiceProviderAsyncHttpTask getServiceProviderAsyncHttpTask = new GetServiceProviderAsyncHttpTask(); //CANCEL_JOB_URL is a dummy value. The AsyncHttpTask should be changed
+        //getServiceProviderAsyncHttpTask.execute(CANCEL_JOB_URL);
+        assignJobAsyncHttpTask = new AssignJobAsyncHttpTask();
+        if(getServiceProviderAsyncHttpTask .getStatus() == AsyncTask.Status.FINISHED) {
+            assignJobAsyncHttpTask.execute("http://invalidurl.com");
+        }
+        System.out.println("Assigned");
     }
 }

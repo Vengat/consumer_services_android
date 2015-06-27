@@ -148,6 +148,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/assign_job_button"
-        android:id="@+id/assign_job_button" />
+        android:id="@+id/sp_assign_job_button" />
 
 </LinearLayout>
